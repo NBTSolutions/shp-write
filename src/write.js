@@ -17,11 +17,10 @@ function write(rows, geometry_type, geometries, callback) {
 
   var TYPE = types.geometries[geometry_type];
 
-
   var writer = writers[TYPE];
 
 
-  var parts = writer.parts(geometries, TYPE);
+  var parts = writer.parts(geometries, TYPE, TYPE);
 
 
   var shpLength = 100 + (parts - geometries.length) * 4 + writer.shpLength(geometries);

@@ -18,11 +18,7 @@ module.exports.write = function writePoints(geometries, extent, shpView, shxView
   function writePolyLine(coordinates, i) {
 
     var flattened = justCoords(coordinates);
-
-
     var noParts = parts([coordinates], TYPE);
-
-
     var contentLength = (flattened.length * 16) + 48 + (noParts - 1) * 4;
 
     var featureExtent = flattened.reduce(function(extent, c) {
@@ -90,11 +86,14 @@ module.exports.extent = function(coordinates) {
   }, ext.blank());
 };
 
-function parts(geometries, TYPE) {
+function parts(geometries, TYPE, TOTAL) {
   var no = 1;
   if (TYPE === types.geometries.POLYGON || TYPE === types.geometries.POLYLINE)  {
     // a polyline with a single linestring:
     if (!Array.isArray(geometries[0][0][0])) {
+      if (TOTAL === types.geometries.POLYLINE) {
+        return geometries.length; // one part per geometry for single polyline
+      }
       return no;
     }
     no = geometries.reduce(function (no, coords) {
