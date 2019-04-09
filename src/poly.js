@@ -93,6 +93,10 @@ module.exports.extent = function(coordinates) {
 function parts(geometries, TYPE) {
   var no = 1;
   if (TYPE === types.geometries.POLYGON || TYPE === types.geometries.POLYLINE)  {
+    // a polyline with a single linestring:
+    if (!Array.isArray(geometries[0][0][0])) {
+      return no;
+    }
     no = geometries.reduce(function (no, coords) {
       no += coords.length;
       if (Array.isArray(coords[0][0][0])) { // multi
@@ -105,7 +109,6 @@ function parts(geometries, TYPE) {
   }
   return no;
 }
-
 module.exports.parts = parts;
 
 function justCoords(coords, l) {
