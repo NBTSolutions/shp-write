@@ -14,6 +14,10 @@ module.exports = write;
 
 // Low-level writing interface
 function write(rows, geometry_type, geometries, attrCols, callback) {
+  if (typeof callback === 'undefined' && typeof attrCols === 'function') {
+    callback = attrCols;
+    attrCols = null;
+  }
 
   var TYPE = types.geometries[geometry_type];
 
@@ -56,7 +60,12 @@ function write(rows, geometry_type, geometries, attrCols, callback) {
   shpView.setInt32(24, shpLength / 2);
   shxView.setInt32(24, (50 + geometries.length * 4));
 
-  var dbfBuf = dbf.structure(rows, attrCols);
+  var dbfBuf;
+  if (attrCols) {
+    dbfBuf = dbf.structure(rows, attrCols);
+  } else {
+    dbfBuf = dbf.structure(rows);
+  }
 
   callback(null, {
     shp: shpView,
